@@ -1,59 +1,83 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Workout Log API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Uma API robusta para gerenciamento de logs de treino, construída com **Laravel 12**. Esta API permite que usuários gerenciem seus próprios exercícios, grupos musculares e rotinas de treino, além de interagir com um catálogo global de exercícios pré-definidos.
 
-## About Laravel
+## 🚀 Funcionalidades
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Autenticação Segura:** Utiliza Laravel Sanctum para autenticação via token.
+- **Catálogo de Exercícios & Grupos Musculares:**
+    - Catálogo Global: Exercícios e grupos musculares padrão disponíveis para todos.
+    - Personalização: Usuários podem criar seus próprios exercícios e grupos musculares.
+    - Visibilidade: Capacidade de ocultar itens globais da sua lista pessoal.
+- **Gerenciamento de Treinos:**
+    - Criação de rotinas de treino personalizadas.
+    - Adição de exercícios específicos a cada treino.
+    - Definição de séries (sets) com peso, repetições, tempo de descanso e RIR (Reps in Reserve).
+    - Clonagem de treinos existentes para facilitar a criação de novas rotinas.
+- **Respostas Padronizadas:** Todas as respostas da API seguem um formato consistente através do `ApiResponse`.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🛠️ Tecnologias
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Framework:** Laravel 12
+- **Autenticação:** Laravel Sanctum
+- **Banco de Dados:** MySQL / PostgreSQL / SQLite
+- **Linguagem:** PHP 8.2+
 
-## Learning Laravel
+## ⚙️ Instalação e Configuração
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Pré-requisitos
+- PHP 8.2 ou superior
+- Composer
+- Docker (opcional, via Laravel Sail)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Passos para Instalação
 
-## Laravel Sponsors
+1.  **Clone o repositório:**
+    ```bash
+    git clone https://github.com/seu-usuario/workoutlog-api.git
+    cd workoutlog-api
+    ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+2.  **Instale as dependências e configure o ambiente:**
+    O projeto inclui um script de setup facilitado no `composer.json`:
+    ```bash
+    composer run setup
+    ```
+    *Este comando instalará dependências, criará o arquivo `.env`, gerará a chave da aplicação e executará as migrations.*
 
-### Premium Partners
+3.  **Inicie o servidor de desenvolvimento:**
+    ```bash
+    php artisan serve
+    ```
+    Ou use o Laravel Sail para rodar via Docker:
+    ```bash
+    ./vendor/bin/sail up
+    ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 📖 Documentação da API (Endpoints Principais)
 
-## Contributing
+Todos os endpoints da API estão sob o prefixo `/api/v1`.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Autenticação
+- `POST /login`: Autenticação de usuário.
+- `POST /register`: Cadastro de novo usuário.
+- `GET /me`: Detalhes do usuário autenticado (requer token).
+- `POST /logout`: Revogação do token de acesso.
 
-## Code of Conduct
+### Grupos Musculares & Exercícios
+- `GET /muscle-groups`: Lista grupos musculares visíveis.
+- `POST /muscle-groups`: Cria um grupo muscular personalizado.
+- `POST /muscle-groups/{id}/hide`: Oculta um grupo muscular global.
+- `GET /exercises`: Lista exercícios disponíveis.
+- `POST /exercises`: Cria um exercício personalizado.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Treinos (Workouts)
+- `GET /workouts`: Lista os treinos do usuário.
+- `POST /workouts`: Cria um novo treino.
+- `POST /workouts/{id}/clone`: Clona um treino existente.
+- `POST /workouts/{id}/exercises`: Adiciona um exercício ao treino.
+- `POST /workout-exercises/{id}/sets`: Adiciona uma série (set) a um exercício de um treino.
 
-## Security Vulnerabilities
+## 📄 Licença
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Este projeto está sob a licença [MIT](LICENSE).

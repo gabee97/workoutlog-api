@@ -7,9 +7,9 @@ use App\Models\Exercise;
 use App\Models\MuscleGroup;
 use App\Support\ApiResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\DB;
 
 class ExerciseController extends Controller
 {
@@ -62,7 +62,7 @@ class ExerciseController extends Controller
             ->visibleTo($userId)
             ->first();
 
-        if (!$mg) {
+        if (! $mg) {
             return ApiResponse::error('Categoria muscular inválida para este usuário.', [], 403);
         }
 
@@ -92,6 +92,26 @@ class ExerciseController extends Controller
         return ApiResponse::success($item, 'Exercício criado com sucesso', 201);
     }
 
+    public function show(Request $request, Exercise $exercise)
+    {
+        $this->authorize('view', $exercise);
+
+        $userId = (int) $request->user()->id;
+        $isHidden = DB::table('user_hidden_exercises')
+            ->where('user_id', $userId)
+            ->where('exercise_id', $exercise->id)
+            ->exists();
+
+        if (! $exercise->is_active || $isHidden) {
+            return ApiResponse::error('Exercício não encontrado.', [], 404);
+        }
+
+        return ApiResponse::success(
+            $exercise->load('muscleGroup'),
+            'Detalhes do exercício'
+        );
+    }
+
     public function update(Request $request, Exercise $exercise)
     {
         $this->authorize('update', $exercise);
@@ -119,7 +139,7 @@ class ExerciseController extends Controller
                 ->visibleTo($userId)
                 ->first();
 
-            if (!$mg) {
+            if (! $mg) {
                 return ApiResponse::error('Categoria muscular inválida para este usuário.', [], 403);
             }
         }

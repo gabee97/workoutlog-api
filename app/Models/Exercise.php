@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class Exercise extends Model
 {
-   protected $fillable = [
+    protected $fillable = [
+        'owner_user_id',
         'name',
         'slug',
         'muscle_group_id',

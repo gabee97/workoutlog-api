@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Workout;
+use App\Models\WorkoutDay;
 use App\Models\WorkoutExercise;
 use App\Models\WorkoutExerciseSet;
 use App\Models\Exercise;
@@ -22,6 +23,12 @@ class WorkoutSeeder extends Seeder
             'sort_order'    => 1,
         ]);
 
+        $workoutDay = WorkoutDay::create([
+            'workout_id'  => $workout->id,
+            'name'        => 'Treino A',
+            'sort_order'  => 1,
+        ]);
+
         // ===== EXERCÍCIOS DO TREINO =====
         $exerciseNames = [
             'Supino reto com barra',
@@ -39,9 +46,13 @@ class WorkoutSeeder extends Seeder
             }
 
             $workoutExercise = WorkoutExercise::create([
-                'workout_id'  => $workout->id,
-                'exercise_id' => $exercise->id,
-                'sort_order'  => $exerciseIndex + 1,
+                'workout_day_id' => $workoutDay->id,
+                'exercise_id'    => $exercise->id,
+                'target_sets'    => 3,
+                'min_reps'       => 10,
+                'max_reps'       => 10,
+                'rest_seconds'   => 60,
+                'sort_order'     => $exerciseIndex + 1,
             ]);
 
             // ===== SÉRIES =====
